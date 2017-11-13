@@ -63,7 +63,7 @@ small:hover {
 	    </tr>
 	    <tr>
 	      <td><input type="submit" value="글쓰기"></td>
-	      <td><input type="reset" value="글쓰기취소"></td>	      	 
+	      <td><input type="reset" value="글쓰기취소" onclick="history.back()"></td>	      	 
 	    </tr>		
 	</table>	
 </form>

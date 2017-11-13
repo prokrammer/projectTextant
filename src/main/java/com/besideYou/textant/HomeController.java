@@ -98,7 +98,14 @@ public class HomeController {
 		
 		File file = new File("d:/temp/Converted_PdfFiles_to_Image/FirstPdf.pdf/FirstPdf_"+fileName+".jpg");
 		byte[] data = null;
-		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+		BufferedInputStream bis=null;
+		try {
+			bis = new BufferedInputStream(new FileInputStream(file));
+		} catch (FileNotFoundException e1) {
+			System.out.println("마지막 페이지 입니다");
+//			e1.printStackTrace();
+			return null;
+		}
 		ResponseEntity<byte[]> entity = null;
 
 			try {

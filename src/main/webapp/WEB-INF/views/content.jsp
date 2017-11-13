@@ -5,18 +5,56 @@
 <html>
 <head>
 	<title>Home</title>
+	<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
 </head>
 <body>
 <h1>
 	Hello world!</h1>  
 	<br/>
-	<div class="fileDrop" style="width: 800px">
-	<img src='displayFile.text?fileName=1' width="49%" style="border: black solid 1px; margin-right: 0; padding-right: 0;"/>
-	<img src='displayFile.text?fileName=2' width="49%" style="border: black solid 1px; margin-left: 0; padding-left: 0;"/>	</div>
+	<div class="fileDrop" style="width: 800px;height: 600px;">
+<!-- 	<img src='displayFile.text?fileName=1' width="49%" style="border: black solid 1px; margin-right: 0; padding-right: 0;"/> -->
+<!-- 	<img src='displayFile.text?fileName=2' width="49%" style="border: black solid 1px; margin-left: 0; padding-left: 0;"/>	</div> -->
+	<img class="leftPage" width="49%" height="590px" style="border: black solid 1px; margin-right: 0; padding-right: 0;overflow: hidden"/>
+	<img class="rightPage" width="49%" height="590px" style="border: black solid 1px; margin-right: 0; padding-right: 0;overflow: hidden"/>
 	<br/>
 	<a href="#" onclick="history.back()" >뒤로</a>
 	<br/>
+	
+	
 <script>
+//    let pageNum =1;
+//    $(".leftPage").
+    
+    $(document).ready(function(){
+    	let pageNum = 1;
+    	$(".leftPage").attr("src","displayFile.text?fileName="+pageNum);
+    	$(".rightPage").attr("src","displayFile.text?fileName="+(pageNum+1));
+        pageNum = pageNum+2;
+    	$(".leftPage").on("click",function(event){
+    		pageNum -= 2;
+    		if(pageNum<=0){
+    			alert("처음 페이지 입니다");
+    			pageNum +=2;
+    		} else {
+    			event.preventDefault();
+                $(".leftPage").attr("src","displayFile.text?fileName="+pageNum);
+                $(".rightPage").attr("src","displayFile.text?fileName="+(pageNum+1));	
+    		}
+            
+        });
+    	
+		$(".rightPage").on("click",function(event){
+			pageNum += 2;	
+            event.preventDefault();
+            $(".leftPage").attr("src","displayFile.text?fileName="+pageNum);
+            $(".rightPage").attr("src","displayFile.text?fileName="+(pageNum+1));
+            
+        });
+    })
+    /*
 $(".fileDrop")
 		.on(
 			"click",
@@ -94,7 +132,7 @@ $(".fileDrop")
 							+ xhr.statusText);
 				}
 			});
-});
+});*/
 </script>
 </body>
 </html>

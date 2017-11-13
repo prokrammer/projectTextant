@@ -158,7 +158,7 @@ public class PdfImage implements Runnable {
 //							DataBufferInt imageByte = (DataBufferInt)bim.getData().getDataBuffer();
 //							int[] imageInt = imageByte.getData();
 								String imageDest4 =destinationDir + oldFileName + "/" + pageNumber + "/" + fileName
-										+ "_" + imageCount + ".png";
+										+ "_" + imageCount + ".jpg";
 							    FileOutputStream fos4 = new FileOutputStream(new File(imageDest4));
 								BufferedOutputStream bos4 = new BufferedOutputStream(fos4);
 //							bos3.write(imageByte);
