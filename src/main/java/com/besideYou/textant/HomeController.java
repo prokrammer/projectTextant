@@ -7,36 +7,36 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import com.besideYou.textant.Dto.FileDto;
 
 /**
  * Handles requests for the application home page.
  */
 @Controller
 public class HomeController {
+	
+	@Autowired
+	PdfService pdfService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
@@ -63,10 +63,12 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = "/write.text", method = RequestMethod.POST)
-	public String write(String title, String content, @RequestPart("textFile") List<MultipartFile> mFile) {
+	public String write(String title, String content, @RequestPart("textFile") List<MultipartFile> mFile, Model model) {
 		for(MultipartFile file : mFile) {
+			
 			System.out.println(file.getOriginalFilename());
 			File files = new File("d:/temp/temp/"+file.getOriginalFilename());
+			
 			try {
 				BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(files));
 				bos.flush();
@@ -78,15 +80,27 @@ public class HomeController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			PdfImage pdfImage = new PdfImage(file.getOriginalFilename());
-			
-			Thread thread = new Thread(pdfImage);
-			
+			pdfService.setOldFileName(files.getName());
+			pdfService.setModel(model);
+			Thread thread = new Thread(pdfService);
 			thread.start();
+//			pdfService.run();
 		}
 		
-		return "home";
+		return "progress";
 	}
+	@RequestMapping(value="/getProgress.text", produces="application/json;charset=UTF-8")
+	@ResponseBody
+	public HashMap<String,String> getProgress(Model model) {
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return pdfService.getProgress(model);
+	}
+	
 	@RequestMapping(value="/read.text")
 	public String read() throws Exception{
 		return "content";
@@ -96,7 +110,7 @@ public class HomeController {
 	@RequestMapping(value="/displayFile.text")
 	public ResponseEntity<byte[]> displayFile(String fileName) throws IOException {
 		
-		File file = new File("d:/temp/Converted_PdfFiles_to_Image/FirstPdf.pdf/FirstPdf_"+fileName+".jpg");
+		File file = new File("d:/temp/Converted_PdfFiles_to_Image/1FirstPdf.pdf/1FirstPdf_"+fileName+".jpg");
 		byte[] data = null;
 		BufferedInputStream bis=null;
 		try {
@@ -104,7 +118,7 @@ public class HomeController {
 		} catch (FileNotFoundException e1) {
 			System.out.println("마지막 페이지 입니다");
 //			e1.printStackTrace();
-			return null;
+			return new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
 		}
 		ResponseEntity<byte[]> entity = null;
 
@@ -124,7 +138,6 @@ public class HomeController {
 				bis.close();
 			}
 			return entity;
-			
 	}
 	
 	

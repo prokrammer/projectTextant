@@ -7,6 +7,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -19,20 +22,44 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @SuppressWarnings("unchecked")
-public class PdfImage implements Runnable {
-	String oldFileName /*= "gameOfThrone.pdf"*/;
+
+
+@Service
+public class PdfImage implements PdfService {
+	private String oldFileName /*= "gameOfThrone.pdf"*/;
+	private PdfImage() {};
+	private Model model;
 	
-	public PdfImage(String oldFileName) {
+	int totalPageNum, currPageNum;
+	
+	public Model getModel() {
+		return model;
+	}
+	@Override
+	public void setModel(Model model) {
+		this.model = model;
+	}
+
+	public String getOldFileName() {
+		return oldFileName;
+	}
+	
+	@Override
+	public void setOldFileName(String oldFileName) {
 		this.oldFileName = oldFileName;
 	}
 
 	
-	
-	public void main(String[] args) {
-		PdfImage myrun = new PdfImage(oldFileName);
+	@Override
+	public void main() {
+		System.out.println("main`s file : " + oldFileName);
+		PdfImage myrun = new PdfImage();
 		
 		Thread t = new Thread(myrun); // 생성한 myrun 객체를 인수로 쓰레드 생성
 		t.start();
@@ -51,16 +78,16 @@ public class PdfImage implements Runnable {
 		// TODO Auto-generated method stub
 		PDDocument document=null;
 		try {
-			String sourceDir = "D:/temp/"; // Pdf files are read from this folder
+			String sourceDir = "D:/temp/temp/"; // Pdf files are read from this folder
 			String destinationDir = "D:/temp/Converted_PdfFiles_to_Image/"; // converted images from pdf document are
 																			// saved here
-			
 			Long startTime = System.currentTimeMillis();
 			System.out.println(startTime);
 
 			File sourceFile = new File(sourceDir + oldFileName);
 			File destinationFile = new File(destinationDir + oldFileName);
 
+			System.out.println("sourceFile = "+sourceFile);
 			if (!destinationFile.exists()) {
 				destinationFile.mkdir();
 				System.out.println("Folder Created -> " + destinationFile.getAbsolutePath());
@@ -78,7 +105,8 @@ public class PdfImage implements Runnable {
 					int pageCounter = 0;
 					String fileName = sourceFile.getName().replace(".pdf", "");
 					System.out.println("Total files to be converted -> " + document.getPages().getCount());
-					
+					totalPageNum = document.getPages().getCount();
+//					model.addAttribute("totalPage", document.getPages().getCount());
 					int pageNumber = 1;
 					for (PDPage page : document.getPages())	{
 						// 기존의 방식
@@ -197,7 +225,9 @@ public class PdfImage implements Runnable {
 								totalImages++;
 							}
 						}*/
-					    System.out.println("pageNumber : " + pageNumber);
+//					    System.out.println("pageNumber : " + pageNumber);
+//					    model.addAttribute("pageNumber", pageNumber);
+					    currPageNum = pageNumber;
 						pageNumber++;
 						pageCounter++;
 					}
@@ -222,8 +252,18 @@ public class PdfImage implements Runnable {
 
 		
 	}
-	
-	
-	
+	HashMap<String,String> progressMap;
+	@Override
+	@ResponseBody
+	public HashMap<String,String> getProgress(Model model) {
+		System.out.println("getProgress!!");
+		progressMap = new HashMap<String,String>();
+		progressMap.put("totalPage",String.valueOf(totalPageNum));
+		progressMap.put("pageNumber", String.valueOf(currPageNum));
+		model.addAttribute("totalPage",totalPageNum);
+		model.addAttribute("pageNumber", currPageNum);
+		System.out.println(progressMap.toString());
+		return progressMap;
+	}
 	
 }
