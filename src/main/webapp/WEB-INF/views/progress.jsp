@@ -9,6 +9,7 @@
 	integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
 	crossorigin="anonymous"></script>
 </head>
+
 <body>
 	${totalPage}
 	<br /> ${pageNumber}
