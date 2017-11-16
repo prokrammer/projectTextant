@@ -4,6 +4,14 @@
 <html>
 <head>
 	<title>Home</title>
+	<style>
+	ul{
+	list-style: none;
+	}
+	ul a{
+	text-decoration: none;
+	}
+	</style>
 </head>
 <body>
 <h1>
@@ -11,9 +19,13 @@
 </h1>
 
 <P>  The time on the server is ${serverTime}. </P>
+<ul>
+<c:forEach var="files" items="${fileList}">
+	<li><a href="/textant/read.text?fileName=${files}"><c:out value="${files}"/></a></li>
+</c:forEach>
+</ul>
 <br/>
 <a href="/textant/write.text">글쓰기</a>
 <br/>
-<a href="/textant/read.text">책읽기</a>
 </body>
 </html>

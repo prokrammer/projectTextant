@@ -17,9 +17,8 @@
     </style>
 </head>
 <body>
-<h1>
-	Hello world!</h1>
-	<div class="plus">확대</div>  
+<%-- ${fileName} --%>
+<!-- 	<div class="plus">확대</div>   -->
 	<br/>
 	<div class="fileDrop" style="width: 1200px;height: 900px;">
 <!-- 	<img src='displayFile.text?fileName=1' width="49%" style="border: black solid 1px; margin-right: 0; padding-right: 0;"/> -->
@@ -35,6 +34,7 @@
 	
 <script>
    let pageNum =1;
+   let maxPage = 999;
 //    $(".leftPage").
     $(document).keydown(function(event) {
 		if (event.keyCode == '37') {
@@ -45,16 +45,22 @@
 				pageNum +=2;
 			} else {
 				event.preventDefault();
-        	    $(".leftPage").attr("src","displayFile.text?fileName="+pageNum);
-            	$(".rightPage").attr("src","displayFile.text?fileName="+(pageNum+1));	
+        	    $(".leftPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+pageNum);
+            	$(".rightPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+(pageNum+1));	
 			}
-		
 		}
 		else if (event.keyCode == '39') {
-			pageNum += 2;	
-            event.preventDefault();
-            $(".leftPage").attr("src","displayFile.text?fileName="+pageNum);
-            $(".rightPage").attr("src","displayFile.text?fileName="+(pageNum+1));
+			
+			pageNum += 2;
+			if(pageNum>maxPage){
+				alert("마지막 페이지 입니다");
+				pageNum -=2;
+			} else{
+				event.preventDefault();
+	            $(".leftPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+pageNum);
+	            $(".rightPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+(pageNum+1));	
+			}
+            
 // 		alert('우측 화살키를 누르셨습니다.');
 		}
     });
@@ -62,8 +68,8 @@
 
     $(document).ready(function(){
 //     	let pageNum = 1;
-    	$(".leftPage").attr("src","displayFile.text?fileName="+pageNum);
-    	$(".rightPage").attr("src","displayFile.text?fileName="+(pageNum+1));
+    	$(".leftPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+pageNum);
+    	$(".rightPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+(pageNum+1));
 //         pageNum = pageNum+2;
     	$(".leftPage").on("click",function(event){
     		pageNum -= 2;
@@ -72,8 +78,8 @@
     			pageNum +=2;
     		} else {
     			event.preventDefault();
-                $(".leftPage").attr("src","displayFile.text?fileName="+pageNum);
-                $(".rightPage").attr("src","displayFile.text?fileName="+(pageNum+1));	
+                $(".leftPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+pageNum);
+                $(".rightPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+(pageNum+1));	
     		}
             
         });
@@ -81,8 +87,14 @@
 		$(".rightPage").on("click",function(event){
 			pageNum += 2;	
             event.preventDefault();
-            $(".leftPage").attr("src","displayFile.text?fileName="+pageNum);
-            $(".rightPage").attr("src","displayFile.text?fileName="+(pageNum+1));
+            if(pageNum>maxPage){
+				alert("마지막 페이지 입니다");
+				pageNum -=2;
+			} else{
+				event.preventDefault();
+	            $(".leftPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+pageNum);
+	            $(".rightPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+(pageNum+1));	
+			}
             
         });
     });

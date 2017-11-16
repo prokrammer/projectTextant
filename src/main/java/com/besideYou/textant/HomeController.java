@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +54,17 @@ public class HomeController {
 		String formattedDate = dateFormat.format(date);
 		
 		model.addAttribute("serverTime", formattedDate );
+		
+		File file = new File("D:\\temp\\Converted_PdfFiles_to_Image\\");
+		File[] files = file.listFiles();
+		ArrayList<String> fileNames = new ArrayList<String>();
+		for(File lis : files) {
+			System.out.println("파일이름 : " + lis.getName());
+			fileNames.add(lis.getName());
+		}
+		model.addAttribute("fileList", fileNames);
+		
+		
 		
 		return "home";
 	}
@@ -102,15 +114,29 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value="/read.text")
-	public String read() throws Exception{
+	public String read(String fileName, Model model) throws Exception{
+		System.out.println(fileName);
+		File file = new File("d:\\temp\\Converted_PdfFiles_to_Image\\"+fileName+"\\");
+//		System.out.println(file.getName());
+//		File[] filefile = file.listFiles();
+//		for(File lfile : filefile) {
+//			String fileNameName = lfile.getName();
+//			if(fileNameName.substring(fileNameName.lastIndexOf(".")).equals("jpg")) {
+//				System.out.println(fileNameName);
+//			}
+//				
+//		}
+		model.addAttribute("fileName", fileName);
 		return "content";
 	}
 	
 	
 	@RequestMapping(value="/displayFile.text")
-	public ResponseEntity<byte[]> displayFile(String fileName) throws IOException {
-		
-		File file = new File("d:/temp/Converted_PdfFiles_to_Image/1FirstPdf.pdf/1FirstPdf_"+fileName+".jpg");
+	public ResponseEntity<byte[]> displayFile(String fileName,String pageNum) throws IOException {
+		System.out.println("fileName + pageNum " + fileName + pageNum);
+		String realName = fileName.substring(0,fileName.lastIndexOf("."));
+		System.out.println(realName);
+		File file = new File("d:/temp/Converted_PdfFiles_to_Image/"+fileName+"/"+realName+"_"+pageNum+".jpg");
 		byte[] data = null;
 		BufferedInputStream bis=null;
 		try {
