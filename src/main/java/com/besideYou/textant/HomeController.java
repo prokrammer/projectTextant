@@ -1,5 +1,6 @@
 package com.besideYou.textant;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -115,47 +116,53 @@ public class HomeController {
 	
 	@RequestMapping(value="/read.text")
 	public String read(String fileName, Model model) throws Exception{
+		int totalPageNum = 0;
 		System.out.println(fileName);
-		File file = new File("d:\\temp\\Converted_PdfFiles_to_Image\\"+fileName+"\\");
-//		System.out.println(file.getName());
-//		File[] filefile = file.listFiles();
-//		for(File lfile : filefile) {
-//			String fileNameName = lfile.getName();
-//			if(fileNameName.substring(fileNameName.lastIndexOf(".")).equals("jpg")) {
-//				System.out.println(fileNameName);
-//			}
-//				
-//		}
+		try {
+			File file = new File("d:\\temp\\Converted_PdfFiles_to_Image\\"+fileName+"\\");
+			File[] filefile = file.listFiles();
+			for(File lfile : filefile) {
+				String imgFile = lfile.getName();
+				System.out.println(imgFile);
+				if((imgFile.lastIndexOf("."))!=-1) {
+					if((imgFile.substring(imgFile.lastIndexOf("."))).equals(".jpg")) {
+						totalPageNum++;
+						System.out.println("이미지 파일! " + totalPageNum);
+					}	
+				}
+				
+			}
+		} catch (Exception e) {
+			System.out.println("파일에 문제가 있군요");
+			e.printStackTrace();
+		}
 		model.addAttribute("fileName", fileName);
+		model.addAttribute("totalPageNum", totalPageNum);
 		return "content";
 	}
 	
 	
 	@RequestMapping(value="/displayFile.text")
 	public ResponseEntity<byte[]> displayFile(String fileName,String pageNum) throws IOException {
-		System.out.println("fileName + pageNum " + fileName + pageNum);
 		String realName = fileName.substring(0,fileName.lastIndexOf("."));
-		System.out.println(realName);
 		File file = new File("d:/temp/Converted_PdfFiles_to_Image/"+fileName+"/"+realName+"_"+pageNum+".jpg");
-		byte[] data = null;
 		BufferedInputStream bis=null;
+		ResponseEntity<byte[]> entity = null;
 		try {
 			bis = new BufferedInputStream(new FileInputStream(file));
 		} catch (FileNotFoundException e1) {
 			System.out.println("마지막 페이지 입니다");
 //			e1.printStackTrace();
-			return new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
+			bis = new BufferedInputStream(new FileInputStream("d:/temp/temp/TEXTANT.png"));
+			entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(bis),HttpStatus.BAD_REQUEST);
+			bis.close();
+			return entity;
 		}
-		ResponseEntity<byte[]> entity = null;
-
 			try {
-				
 				HttpHeaders headers = new HttpHeaders();
 				System.out.println(file);
-
 				headers.add("Content-Disposition",
 						"attachment; filename=\"" + URLEncoder.encode(file.getName(), "utf-8").replace("+", "%20") + "\"");
-
 				entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(bis), headers, HttpStatus.CREATED);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -165,6 +172,5 @@ public class HomeController {
 			}
 			return entity;
 	}
-	
 	
 }

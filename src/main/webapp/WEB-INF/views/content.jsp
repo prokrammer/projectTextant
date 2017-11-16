@@ -20,21 +20,20 @@
 <%-- ${fileName} --%>
 <!-- 	<div class="plus">확대</div>   -->
 	<br/>
-	<div class="fileDrop" style="width: 1200px;height: 900px;">
+	<div class="fileDrop" style="width: 1200px;height: 900px;float:left;">
 <!-- 	<img src='displayFile.text?fileName=1' width="49%" style="border: black solid 1px; margin-right: 0; padding-right: 0;"/> -->
 <!-- 	<img src='displayFile.text?fileName=2' width="49%" style="border: black solid 1px; margin-left: 0; padding-left: 0;"/>	</div> -->
 	<img class="leftPage" width="49%" height="880px" alt="" style="border: black solid 1px; margin-right: 0; padding-right: 0;overflow: hidden; cursor: pointer;"/>
 	<img class="rightPage" width="49%" height="880px" alt="" style="border: black solid 1px; margin-right: 0; padding-right: 0;overflow: hidden; cursor: pointer;"/>
 	</div>
-	213213213
-	<br/>
-	<a href="#" onclick="history.back()" >뒤로</a>
+	<a href="#" onclick="history.back()" style="float: left;">뒤로</a>
 	<br/>
 	
 	
 <script>
    let pageNum =1;
-   let maxPage = 999;
+   let maxPage = 9999;
+   maxPage = '${totalPageNum}';
 //    $(".leftPage").
     $(document).keydown(function(event) {
 		if (event.keyCode == '37') {

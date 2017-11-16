@@ -1,17 +1,17 @@
 package com.besideYou.textant;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
 
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -25,10 +25,6 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-
-@SuppressWarnings("unchecked")
-
 
 @Service
 public class PdfImage implements PdfService {
@@ -63,14 +59,6 @@ public class PdfImage implements PdfService {
 		
 		Thread t = new Thread(myrun); // 생성한 myrun 객체를 인수로 쓰레드 생성
 		t.start();
-		/*try {
-			TextExtractor.getInstance().text();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		
-	
 	}
 
 	@Override
@@ -120,27 +108,33 @@ public class PdfImage implements PdfService {
 */
 						//새로운 방식 <훨씬 빠른듯>
 						
+						Long startImageTime = System.currentTimeMillis();
+						
 						BufferedImage bim = pdfRenderer.renderImageWithDPI(pageCounter, 144, ImageType.RGB);
 						
 //					byte[] imageByte = ((DataBufferByte)bim.getData().getDataBuffer()).getData();
-						
 						ByteArrayOutputStream baos = new ByteArrayOutputStream();
-						ImageIO.write( bim, "jpg", baos );
+						
+//						int[] imageInInt = ((DataBufferInt)bim.getRaster().getDataBuffer()).getData();
+						
+						ImageIO.write( bim, "png", baos );
 						baos.flush();
 						byte[] imageInByte = baos.toByteArray();
 						baos.close();
+						
+						
 //					DataBufferInt imageByte = (DataBufferInt)bim.getData().getDataBuffer();
 //					int[] imageInt = imageByte.getData();
-					    FileOutputStream fos3 = new FileOutputStream(new File(
-								destinationDir + oldFileName + "/" + fileName + "_" + pageNumber + ".jpg"));
-						BufferedOutputStream bos3 = new BufferedOutputStream(fos3);
+					    ;
+						BufferedOutputStream bos3 = new BufferedOutputStream(
+								new FileOutputStream(new File(
+								destinationDir + oldFileName + "/" + fileName + "_" + pageNumber + ".jpg")));
 //					ImageIO.write(bim, "jpg", bos3);
 //					bos3.write(imageByte);
 						bos3.write(imageInByte);
 						bos3.close();
-						fos3.close();
 						
-						
+						System.out.println("1image : " + (System.currentTimeMillis()-startImageTime));
 						
 						PDFTextStripper reader = new PDFTextStripper();
 						reader.setStartPage(pageNumber);
@@ -150,12 +144,10 @@ public class PdfImage implements PdfService {
 						/*FileOutputStream fos = new FileOutputStream(
 								new File(destinationDir + oldFileName + "/" + pageNumber + "/"+fileName + ".txt"));*/
 //					BufferedOutputStream bos = new BufferedOutputStream(fw);
-						FileWriter fw = new FileWriter(new File(destinationDir + oldFileName + "/" + pageNumber + "/"+fileName + ".txt"));
-						BufferedWriter bw = new BufferedWriter(fw);
+						BufferedWriter bw = new BufferedWriter(new FileWriter(new File(destinationDir + oldFileName + "/" + pageNumber + "/"+fileName + ".txt")));
 						bw.write(pageText);
 						System.out.println("TextCreated" + destinationDir + pageNumber + "/" + fileName + ".txt");
 						bw.close();
-						fw.close();
 						
 						
 						PDResources pdResources = page.getResources();
@@ -187,18 +179,11 @@ public class PdfImage implements PdfService {
 //							int[] imageInt = imageByte.getData();
 								String imageDest4 =destinationDir + oldFileName + "/" + pageNumber + "/" + fileName
 										+ "_" + imageCount + ".jpg";
-							    FileOutputStream fos4 = new FileOutputStream(new File(imageDest4));
-								BufferedOutputStream bos4 = new BufferedOutputStream(fos4);
+								BufferedOutputStream bos4 = new BufferedOutputStream(
+										new FileOutputStream(new File(imageDest4)));
 //							bos3.write(imageByte);
 								bos4.write(imageInByteSa);
 								bos4.close();
-								fos4.close();
-					        	
-					        	
-					        	
-					        	
-					        	
-					        	
 					        	
 					        	
 					            imageCount++;
@@ -256,13 +241,13 @@ public class PdfImage implements PdfService {
 	@Override
 	@ResponseBody
 	public HashMap<String,String> getProgress(Model model) {
-		System.out.println("getProgress!!");
+//		System.out.println("getProgress!!");
 		progressMap = new HashMap<String,String>();
 		progressMap.put("totalPage",String.valueOf(totalPageNum));
 		progressMap.put("pageNumber", String.valueOf(currPageNum));
 		model.addAttribute("totalPage",totalPageNum);
 		model.addAttribute("pageNumber", currPageNum);
-		System.out.println(progressMap.toString());
+//		System.out.println(progressMap.toString());
 		return progressMap;
 	}
 	
