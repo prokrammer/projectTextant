@@ -17,6 +17,7 @@
     </style>
 </head>
 <body>
+<img src="/textant/resources/3.gif" style="display: none;">
 <%-- ${fileName} --%>
 <!-- 	<div class="plus">확대</div>   -->
 	<br/>
@@ -26,12 +27,18 @@
 	<img class="leftPage" width="49%" height="880px" alt="" style="border: black solid 1px; margin-right: 0; padding-right: 0;overflow: hidden; cursor: pointer;"/>
 	<img class="rightPage" width="49%" height="880px" alt="" style="border: black solid 1px; margin-right: 0; padding-right: 0;overflow: hidden; cursor: pointer;"/>
 	</div>
-	<a href="#" onclick="history.back()" style="float: left;">뒤로</a>
+<!-- 	<a href="#" onclick="history.back()" style="float: left;">뒤로</a> -->
+	<a href="/textant/main.text" style="float:left;">뒤로</a>
 	<br/>
 	
-	
 <script>
+
+let loading = function(){
+    $(".leftPage").attr("src","/textant/resources/3.gif");
+    $(".rightPage").attr("src","/textant/resources/3.gif");
+};
    let pageNum =1;
+    
    let maxPage = 9999;
    maxPage = '${totalPageNum}';
 //    $(".leftPage").
@@ -42,10 +49,12 @@
 			if(pageNum<=0){
 				alert("처음 페이지 입니다");
 				pageNum +=2;
+				
 			} else {
 				event.preventDefault();
-        	    $(".leftPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+pageNum);
-            	$(".rightPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+(pageNum+1));	
+                loading();
+				$(".leftPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+pageNum);
+	            $(".rightPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+(pageNum+1));
 			}
 		}
 		else if (event.keyCode == '39') {
@@ -56,8 +65,9 @@
 				pageNum -=2;
 			} else{
 				event.preventDefault();
-	            $(".leftPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+pageNum);
-	            $(".rightPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+(pageNum+1));	
+                loading();
+				$(".leftPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+pageNum);
+	            $(".rightPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+(pageNum+1));
 			}
             
 // 		alert('우측 화살키를 누르셨습니다.');
@@ -67,8 +77,9 @@
 
     $(document).ready(function(){
 //     	let pageNum = 1;
-    	$(".leftPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+pageNum);
-    	$(".rightPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+(pageNum+1));
+        loading();
+        $(".leftPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+pageNum);
+        $(".rightPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+(pageNum+1));
 //         pageNum = pageNum+2;
     	$(".leftPage").on("click",function(event){
     		pageNum -= 2;
@@ -77,8 +88,9 @@
     			pageNum +=2;
     		} else {
     			event.preventDefault();
-                $(".leftPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+pageNum);
-                $(".rightPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+(pageNum+1));	
+    			loading();
+    			$(".leftPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+pageNum);
+	            $(".rightPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+(pageNum+1));
     		}
             
         });
@@ -91,9 +103,10 @@
 				pageNum -=2;
 			} else{
 				event.preventDefault();
-	            $(".leftPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+pageNum);
-	            $(".rightPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+(pageNum+1));	
-			}
+				loading();
+				$(".leftPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+pageNum);
+	            $(".rightPage").attr("src","displayFile.text?fileName="+'${fileName}'+"&pageNum="+(pageNum+1));
+	    	}
             
         });
     });
@@ -103,6 +116,8 @@
     	fileDrop.style.width="1200px";
         fileDrop.style.height="800px";
     })
+    
+    
         
 </script>
 </body>

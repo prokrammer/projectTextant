@@ -21,14 +21,15 @@ public class ImageEx {
 		for(int i = 0; i<10; i++) {
 			BufferedImage bi = ImageIO.read(new File("d:/temp/background-2943548_1920.jpg"));
 			long StartTime = System.currentTimeMillis();
-			byte[] imageInByte = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
+//			byte[] imageInByte = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
+			
 			/*
 			BufferedImage bim = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
 			bim.setData(Raster.createRaster(bi.getSampleModel(), new DataBufferByte(imageInByte,imageInByte.length), new Point()));
 			ImageIO.write(bim, "png", new File("d:/temp/sample.png"));
 			*/
-			/*
 			
+			/*
 			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(new File("d:/temp/sample.jpg")));
 			
 			bos.write();
